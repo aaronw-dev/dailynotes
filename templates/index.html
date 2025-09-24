@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&lt;3</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <!--<div class="page">
+        <div>September 2, 2025</div>
+        <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Excepturi qui minus eveniet asperiores alias
+            dolorem cum esse odio laborum, quisquam expedita voluptatem sed officiis ducimus natus voluptatum soluta ad
+            deleniti.
+            awefawef
+        </p>
+    </div>-->
+
+    {% for message in MESSAGES %}
+    <section>
+        <div class="page">
+            <div>{{message["date"]}}</div><br>
+            <p>{{message["text"]}}</p>
+        </div>
+    </section>
+    {% endfor %}
+</body>
+
+</html>

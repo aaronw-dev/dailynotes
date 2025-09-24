@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+
+:root {
+    --sheet-color: #ffffff;
+    --line-color: #cfd8dc;
+    --sheet-color: #fff8b3;
+    --line-color: #e6d96e;
+    /*--line-color: #ffbbbb;*/
+    --line-step: 1.425em;
+    --line-width: calc(var(--line-step) + 0.075em);
+}
+
+body {
+    font-family: "Caveat";
+    font-weight: normal;
+    font-style: normal;
+    color: #272727;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    scroll-snap-type: y proximity;
+    padding: 5em 0;
+    gap: 7.5em;
+}
+
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    width: 100%;
+}
+
+.page {
+    box-sizing: border-box;
+    -webkit-box-shadow: 2px 7px 13px -1px rgba(0, 0, 0, 0.54);
+    box-shadow: 2px 7px 13px -1px rgba(0, 0, 0, 0.54);
+    font-size: 2rem;
+    max-width: 700px;
+    padding: 20px 40px;
+    padding-top: 40px;
+    background: repeating-linear-gradient(to bottom,
+            var(--sheet-color),
+
+            /* background */
+            var(--sheet-color) var(--line-step),
+            /* line spacing */
+            var(--line-color) var(--line-step),
+            /* line color */
+            var(--line-color) var(--line-width)
+            /* line thickness */
+        );
+    background-position-y: -0.5em;
+    line-height: 1.5em;
+
+    transform-origin: 25% 10%;
+}
+
+::selection,
+::-moz-selection {
+    background-color: #ffe6003d
+}
+
+.page>p {
+    margin: 0;
+    white-space: pre-line;
+}
+
+@media only screen and (max-width: 750px) {
+
+    .page {
+        font-size: 1.5rem;
+        max-width: 90vw;
+        background-position-y: -0.1em;
+        padding: 20px;
+        padding-top: 40px;
+    }
+}

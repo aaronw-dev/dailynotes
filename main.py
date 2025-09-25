@@ -45,6 +45,7 @@ def index():
         {**document.get().to_dict(), "id": document.id}
         for document in db.collection("messages").list_documents()
     ]
+    messagelist.sort(key=lambda m: m["posted"], reverse=True)
     for message in messagelist:
         messagetext = message["text"]
         message["date"] = datetime.strftime(message["posted"], "%B %d, %Y")

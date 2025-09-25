@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from firebase_admin import credentials, firestore
 from flask import Flask, request, render_template
 import firebase_admin
-import dotenv
+
 os.environ["GRPC_VERBOSITY"] = "NONE"
 os.environ["GRPC_TRACE"] = ""
 

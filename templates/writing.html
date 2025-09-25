@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&lt;3 | write</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="shortcut icon" href="/static/logo/stickyheart-64.png" type="image/png">
+    <script src="/static/write.js"></script>
+</head>
+
+<body>
+    <img src="/static/logo/stickyheart-128.png" class="corner-icon">
+    <div class="page" style="width:700px;">
+        <div class="date">Month Day, Year</div><br>
+        <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' onload="this.value=''"
+            placeholder="Write anything..." rows="1"></textarea>
+        <div class="button-row">
+            <button onclick="postMessage()">
+                <img src="/static/icons/send-dark.svg">
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>

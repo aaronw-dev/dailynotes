@@ -6,6 +6,7 @@ function init() {
     copyBox = document.querySelector(".copied")
 
     window.addEventListener("mouseup", onTextSelected)
+    window.addEventListener("touchend", onTextSelected)
 
     commentInput.addEventListener("keydown", function (e) {
         if (e.key === "Escape") {
@@ -14,7 +15,16 @@ function init() {
             postComment();
         }
     });
-
+    window.addEventListener("keyup", e => {
+        if (e.shiftKey) {
+            if (e.key === "ArrowRight" || e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "ArrowDown") {
+                let targetNode = window.getSelection().focusNode.parentElement
+                if (targetNode !== null) {
+                    onTextSelected({ target: targetNode, preventDefault: function(){return null;}})
+                }
+            }
+        }
+    })
     document.querySelectorAll(".comment-highlight").forEach(comment => {
         addCommentHoverCallback(comment)
     })
@@ -44,9 +54,7 @@ function movePopover(element, bounding) {
 }
 function onTextSelected(e) {
     if (!Array.from(document.querySelectorAll(".page>p")).includes(e.target)) {
-        if (
-            !commentprompt.contains(e.target) &&
-            !selcontext.contains(e.target)) {
+        if (!commentprompt.contains(e.target) && !selcontext.contains(e.target)) {
             cancelComment();
         }
         return
@@ -54,7 +62,7 @@ function onTextSelected(e) {
     let selection = window.getSelection()
     currentSelection = selection
 
-    console.log(selection)
+    //console.log(selection)
 
     if (selection.isCollapsed) {
         commentprompt.style.display = "none"
@@ -62,7 +70,7 @@ function onTextSelected(e) {
         return;
     }
     e.preventDefault();
-    
+
     selcontext.style.display = ""
 
     var getRange = selection.getRangeAt(0);

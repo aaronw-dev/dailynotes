@@ -23,6 +23,10 @@ body {
     padding: 5em 0;
     gap: 7.5em;
     width: 100%;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: none;
 }
 
 .page {
@@ -65,6 +69,18 @@ body {
 .page>p {
     margin: 0;
     white-space: pre-line;
+    -webkit-touch-callout: none;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+}
+
+.page>p::-webkit-selection {
+    background-color: #ffe6003d;
+}
+
+.page>p::-moz-selection {
+    background-color: #ffe6003d;
 }
 
 .date {

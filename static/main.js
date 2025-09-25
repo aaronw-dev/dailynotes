@@ -54,14 +54,16 @@ function onTextSelected(e) {
     let selection = window.getSelection()
     currentSelection = selection
 
-    selcontext.style.display = ""
-    if (selection.direction == "none") {
-        if (selection.focusOffset == selection.anchorOffset) {
-            commentprompt.style.display = "none"
-            selcontext.style.display = "none"
-            return;
-        }
+    console.log(selection)
+
+    if (selection.isCollapsed) {
+        commentprompt.style.display = "none"
+        selcontext.style.display = "none"
+        return;
     }
+    e.preventDefault();
+    
+    selcontext.style.display = ""
 
     var getRange = selection.getRangeAt(0);
 

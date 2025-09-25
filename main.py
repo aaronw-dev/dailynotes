@@ -5,6 +5,9 @@ from datetime import datetime, timezone
 from firebase_admin import credentials, firestore
 from flask import Flask, request, render_template
 import firebase_admin
+from colorama import init, Fore, Back
+
+init(autoreset=True)
 
 os.environ["GRPC_VERBOSITY"] = "NONE"
 os.environ["GRPC_TRACE"] = ""
@@ -38,13 +41,10 @@ def escapeCommentText(text: str):
 @app.route("/")
 def index():
     amt = request.args.get("first", 15, type=int)
-    '''with open("private/messages.json", "r") as file:
-        filejson = json.load(file)
-    messagelist = list(reversed(filejson.get("messages")))[:amt]'''
     messagelist = [
         {**document.get().to_dict(), "id": document.id}
-        for document in db.collection("messages").list_documents()
-    ]
+        for document in db.collection("messages").list_documents(amt)
+    ][:amt]
     messagelist.sort(key=lambda m: m["posted"], reverse=True)
     for message in messagelist:
         messagetext = message["text"]
@@ -61,13 +61,13 @@ def index():
                 messagetext[comment["comment_end"]:]
             )
         message["text"] = messagetext
+    print(f"{Fore.LIGHTGREEN_EX}Serving {amt} posts.")
     return render_template("index.html", MESSAGES=messagelist)
 
 
 @app.route("/api/v1/comment", methods=["POST"])
 def comment():
     params = request.json
-    print(params)
     page_id = params.get("pageID")
     comment_data = {k: v for k, v in params.items() if k != "pageID"}
     db.collection("messages").document(page_id).update({

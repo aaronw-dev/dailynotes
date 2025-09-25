@@ -6,6 +6,8 @@ function init() {
     copyBox = document.querySelector(".copied")
 
     window.addEventListener("mouseup", onTextSelected)
+    window.addEventListener("touchend", onTextSelected)
+    document.addEventListener("selectionchange", onSelectionChange)
 
     commentInput.addEventListener("keydown", function (e) {
         if (e.key === "Escape") {
@@ -21,21 +23,39 @@ function init() {
 }
 function addCommentHoverCallback(element) {
     element.addEventListener("mouseover", e => {
-        commentbox.style.display = ""
-        var rect = element.getBoundingClientRect();
-        movePopover(commentbox, rect)
-        commentbox.innerText = element.getAttribute("text")
+        showCommentBox(element);
     })
     element.addEventListener("mouseleave", e => {
-        commentbox.style.display = "none"
+        hideCommentBox();
     })
+
+    element.addEventListener("touchstart", e => {
+        e.preventDefault();
+        showCommentBox(element);
+
+        clearTimeout(mobileCommentTimeout);
+        mobileCommentTimeout = setTimeout(() => {
+            hideCommentBox();
+        }, 3000);
+    })
+}
+
+function showCommentBox(element) {
+    commentbox.style.display = ""
+    var rect = element.getBoundingClientRect();
+    movePopover(commentbox, rect)
+    commentbox.innerText = element.getAttribute("text")
+}
+
+function hideCommentBox() {
+    commentbox.style.display = "none"
 }
 function movePopover(element, bounding) {
     element.style.top = window.scrollY + bounding.top - 10 + "px"
     element.style.left = bounding.x + (bounding.width / 2) + "px"
 }
 function onTextSelected(e) {
-    if (!Array.from(document.querySelectorAll(".page>p")).includes(e.target)) {
+    if (e && e.target && !Array.from(document.querySelectorAll(".page>p")).includes(e.target)) {
         if (
             !commentprompt.contains(e.target) &&
             !selcontext.contains(e.target)) {
@@ -43,20 +63,46 @@ function onTextSelected(e) {
         }
         return
     }
-    let selection = window.getSelection()
-    currentSelection = selection
 
-    selcontext.style.display = ""
-    if (selection.direction == "none") {
-        if (selection.focusOffset == selection.anchorOffset) {
-            //console.log("We are DESELECTING TEXT. Nothing to run.");
-            commentprompt.style.display = "none"
-            selcontext.style.display = "none"
-            return;
-        }
+    handleTextSelection();
+}
+
+function onSelectionChange() {
+    clearTimeout(selectionChangeTimeout);
+    selectionChangeTimeout = setTimeout(() => {
+        handleTextSelection();
+    }, 100);
+}
+
+function handleTextSelection() {
+    let selection = window.getSelection()
+
+    if (selection.rangeCount === 0) return;
+
+    let range = selection.getRangeAt(0);
+    if (range.collapsed) {
+        commentprompt.style.display = "none"
+        selcontext.style.display = "none"
+        return;
     }
 
-    var getRange = selection.getRangeAt(0);
+    let startContainer = range.startContainer;
+    let endContainer = range.endContainer;
+
+    let startParagraph = startContainer.nodeType === Node.TEXT_NODE ? startContainer.parentNode : startContainer;
+    let endParagraph = endContainer.nodeType === Node.TEXT_NODE ? endContainer.parentNode : endContainer;
+
+    while (startParagraph && startParagraph.tagName !== 'P') {
+        startParagraph = startParagraph.parentNode;
+    }
+    while (endParagraph && endParagraph.tagName !== 'P') {
+        endParagraph = endParagraph.parentNode;
+    }
+
+    if (!startParagraph || !endParagraph) return;
+
+    currentSelection = selection;
+    selcontext.style.display = ""
 
     let paragraphElement = selection.anchorNode;
     while (paragraphElement && paragraphElement.tagName !== 'P') {
@@ -72,10 +118,9 @@ function onTextSelected(e) {
         [selectionStart, selectionEnd] = [selectionEnd, selectionStart];
     }
 
-    selectedText = getRange.toString();
-    //console.log(`Selected: "${selectedText}" (${selectionStart}-${selectionEnd})`);
+    selectedText = range.toString();
 
-    var rect = getRange.getBoundingClientRect();
+    var rect = range.getBoundingClientRect();
     movePopover(selcontext, rect)
 }
 
@@ -119,7 +164,20 @@ function addComment() {
 
     movePopover(commentprompt, rect)
 
-    commentInput.focus()
+    setTimeout(() => {
+        commentInput.focus();
+        if (isMobileDevice()) {
+            setTimeout(() => {
+                commentprompt.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+    }, 100);
+}
+
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        ('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0);
 }
 function postComment() {
     let data = {
@@ -189,7 +247,9 @@ function unwrapSpan(span) {
     parent.removeChild(span);
 }
 
-var selcontext, commentprompt, commentbox, commentInput, currentSelection, currentTempSpan, selectedText
+var selcontext, commentprompt, commentbox, commentInput, currentSelection, currentTempSpan, selectedText, copyBox
 var selectionStart = 0;
 var selectionEnd = 0;
+var selectionChangeTimeout;
+var mobileCommentTimeout;
 window.addEventListener("load", init)

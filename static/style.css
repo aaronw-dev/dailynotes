@@ -127,8 +127,20 @@ body {
     pointer-events: none;
 }
 
-@media only screen and (max-width: 750px) {
+.corner-icon {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    filter: drop-shadow(6px 7px 0px #555555);
+}
 
+@media only screen and (max-width: 1010px) {
+    .corner-icon {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 750px) {
     .page {
         font-size: 1.5rem;
         max-width: 90vw;

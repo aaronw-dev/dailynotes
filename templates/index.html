@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>&lt;3</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/main.js"></script>
 </head>
 
 <body>
@@ -18,14 +19,25 @@
             awefawef
         </p>
     </div>-->
-
+    <div class="selcontext popover" style="display: none;">
+        <button onclick="addComment()"><img src="/static/icons/add_comment.svg"></button>
+        <button onclick="copySelection()"><img src="/static/icons/copy.svg"></button>
+    </div>
+    <div class="commentbox popover" style="display: none;">
+        This is a commentbox.
+    </div>
+    <div class="commentprompt popover" style="display: none;">
+        <input type="text" placeholder="Add your thoughts...">
+        <button onclick="postComment()"><img src="/static/icons/send.svg"></button>
+    </div>
+    <div class="copied popover" style="display: none;">
+        Copied.
+    </div>
     {% for message in MESSAGES %}
-    <section>
-        <div class="page">
-            <div>{{message["date"]}}</div><br>
-            <p>{{message["text"]}}</p>
-        </div>
-    </section>
+    <div class="page" pageid="{{message['id']}}">
+        <div class="date">{{message["date"]}}</div><br>
+        <p>{{message["text"]|safe}}</p>
+    </div>
     {% endfor %}
 </body>
 

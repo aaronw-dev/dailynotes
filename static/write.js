@@ -34,7 +34,7 @@ function changePageColor(color) {
         document.documentElement.style.setProperty('--sheet-color', colorEntry.sheetColor);
         document.documentElement.style.setProperty('--line-color', colorEntry.lineColor);
         document.documentElement.style.setProperty('--highlight-color', colorEntry.highlightColor);
-        console.log(document.querySelector("input[name=pagecolor]:checked").value)
+        document.querySelector(".page").className = "page " + color
     }
 }
 

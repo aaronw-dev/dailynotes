@@ -23,7 +23,12 @@ const colors = {
         sheetColor: "#e6e6fa",
         lineColor: "#b39ddb",
         highlightColor: "#b57fff3d"
-    }
+    }/*,
+    hearts: {
+        sheetColor: "#ffb8d0ff",
+        lineColor: "#fd86aaff",
+        highlightColor: "#ff69b43d"
+    }*/
 }
 
 window.addEventListener("load", () => {

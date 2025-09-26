@@ -7,6 +7,7 @@
     <title>&lt;3 | write</title>
     <link rel="stylesheet" href="/static/style.css">
     <link rel="shortcut icon" href="/static/logo/stickyheart-64.png" type="image/png">
+    <script src="/static/colors.js"></script>
     <script src="/static/write.js"></script>
 </head>
 
@@ -17,6 +18,8 @@
         <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' onload="this.value=''"
             placeholder="Write anything..." rows="1"></textarea>
         <div class="button-row">
+            <div class="color-select">
+            </div>
             <button onclick="postMessage()">
                 <img src="/static/icons/send-dark.svg">
             </button>

@@ -63,17 +63,21 @@ def index():
     print(f"{Fore.LIGHTGREEN_EX}Serving {amt} posts.")
     return render_template("index.html", MESSAGES=messagelist)
 
+
 @app.route("/write")
 def write():
     return render_template("writing.html")
 
+
 @app.route("/api/v1/write", methods=["POST"])
 def api_write():
     params = request.json
-    params["comments"]=[]
-    params["posted"] = datetime.fromisoformat(params["posted"].replace('Z', '+00:00'))
+    params["comments"] = []
+    params["posted"] = datetime.fromisoformat(
+        params["posted"].replace('Z', '+00:00'))
     db.collection("messages").add(params)
     return {"status": "success"}, 200
+
 
 @app.route("/api/v1/comment", methods=["POST"])
 def comment():

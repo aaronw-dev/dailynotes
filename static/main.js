@@ -20,7 +20,7 @@ function init() {
             if (e.key === "ArrowRight" || e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "ArrowDown") {
                 let targetNode = window.getSelection().focusNode.parentElement
                 if (targetNode !== null) {
-                    onTextSelected({ target: targetNode, preventDefault: function(){return null;}})
+                    onTextSelected({ target: targetNode, preventDefault: function () { return null; } })
                 }
             }
         }

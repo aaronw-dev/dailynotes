@@ -40,7 +40,7 @@ Daily Notes is a simple, beautiful web application designed for couples to leave
 
 ## The Sweet Details
 
-- **Real-time comments** that persist with each note
+- **Real-time inline comments** that persist with each note
 - **Responsive design** that works on any device
 - **Clean, distraction-free** interface focused on your words
 - **Date organization** so you can look back on your messages

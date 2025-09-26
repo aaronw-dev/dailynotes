@@ -11,6 +11,7 @@ window.addEventListener("load", e => {
 
     for (const [key, value] of Object.entries(colors)) {
         let radioElement = document.createElement("label")
+        radioElement.title = key[0].toUpperCase() + key.slice(1)
         radioElement.className = "container"
         radioElement.id = key
         radioElement.innerHTML = `<input type="radio" name="pagecolor" ${index == 0 ? 'checked="checked"' : ""} value="${key}"><span class="checkmark"></span>`

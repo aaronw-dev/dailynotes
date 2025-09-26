@@ -60,7 +60,7 @@ def index():
                 messagetext[comment["comment_end"]:]
             )
         message["text"] = messagetext
-    print(f"{Fore.LIGHTGREEN_EX}Serving {amt} posts.")
+    print(f"{Fore.LIGHTGREEN_EX}Serving {len(messagelist)} posts.")
     return render_template("index.html", MESSAGES=messagelist)
 
 

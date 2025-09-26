@@ -13,6 +13,16 @@ const colors = {
         sheetColor: "#ffe4ec",
         lineColor: "#ffb6c1",
         highlightColor: "#ff69b43d"
+    },
+    green: {
+        sheetColor: "#d4f7d4",
+        lineColor: "#8fd88f",
+        highlightColor: "#00ff003d"
+    },
+    lavender: {
+        sheetColor: "#e6e6fa",
+        lineColor: "#b39ddb",
+        highlightColor: "#b57fff3d"
     }
 }
 

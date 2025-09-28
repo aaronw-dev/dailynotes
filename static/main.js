@@ -205,6 +205,54 @@ function unwrapSpan(span) {
     parent.removeChild(span);
 }
 
+function loadMorePosts() {
+    const start = document.body.getAttribute("pagesloaded");
+
+    fetch(`/api/v1/posts?start=${encodeURIComponent(start)}`, {
+        method: "GET"
+    })
+        .then(response => response.json())
+        .then(posts => {
+            document.body.setAttribute("pagesloaded", (Number.parseInt(start) + posts.length - 1).toString())
+            const body = document.querySelector("body");
+            let listmeta = posts[posts.length - 1]
+            posts.slice(0, -1).forEach(message => {
+                const pageDiv = document.createElement("div");
+                pageDiv.className = `page ${message.notecolor}`;
+                pageDiv.setAttribute("pageid", message.id);
+
+                const dateDiv = document.createElement("div");
+                dateDiv.className = "date";
+                dateDiv.textContent = message.date;
+
+                const p = document.createElement("p");
+                p.innerHTML = message.text; // message.text is assumed to be safe HTML
+
+                pageDiv.appendChild(dateDiv);
+                pageDiv.appendChild(document.createElement("br"));
+                pageDiv.appendChild(p);
+
+
+                pageDiv.querySelectorAll(".comment-highlight").forEach(comment => {
+                    addCommentHoverCallback(comment)
+                })
+
+
+                const lastChild = body.lastElementChild;
+                body.insertBefore(pageDiv, lastChild);
+
+
+            });
+            if (listmeta.remaining > 0)
+                document.querySelector(".load-more").innerText = `Load more (${listmeta.remaining} left)`
+            else
+                document.querySelector(".load-more").remove()
+        })
+        .catch(error => {
+            console.error("Error loading more posts:", error);
+        });
+}
+
 var selcontext, commentprompt, commentbox, commentInput, currentSelection, currentTempSpan, selectedText, copyBox
 var selectionStart = 0;
 var selectionEnd = 0;

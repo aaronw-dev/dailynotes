@@ -11,7 +11,7 @@
     <script src="/static/main.js"></script>
 </head>
 
-<body>
+<body pagesloaded="{{LOADED}}">
     <!--<div class="page">
         <div>September 2, 2025</div>
         <p>
@@ -42,6 +42,11 @@
         <p>{{message["text"]|safe}}</p>
     </div>
     {% endfor %}
+    {% if SHOWBUTTON %}
+    <button class="load-more" onclick="loadMorePosts()" {{DISABLEBUTTON}}>
+        Load more ({{REMAINING}} left)
+    </button>
+    {% endif %}
 </body>
 
 </html>

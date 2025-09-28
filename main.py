@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 from firebase_admin import credentials, firestore
-from flask import Flask, request, render_template
+from flask import Flask, jsonify, request, render_template
 import firebase_admin
 from colorama import init, Fore, Back
 
@@ -24,9 +24,6 @@ else:
 if not cert_json:
     raise RuntimeError("FIREBASE_CERT_JSON environment variable not set.")
 
-os.environ["GRPC_VERBOSITY"] = "NONE"
-os.environ["GRPC_TRACE"] = ""
-
 cert_dict = json.loads(cert_json)
 cred = credentials.Certificate(cert_dict)
 firebase_admin.initialize_app(cred)
@@ -37,15 +34,22 @@ def escapeCommentText(text: str):
     return text.replace("\"", "&quot;")
 
 
-@app.route("/")
-def index():
-    amt = request.args.get("first", 15, type=int)
+def getPostsFromDB(amt=15, start=0, recent=False):
     messagelist = [
         {**document.get().to_dict(), "id": document.id}
         for document in db.collection("messages").list_documents(amt)
     ]
+    dblength = len(messagelist)
     messagelist.sort(key=lambda m: m["posted"], reverse=True)
-    messagelist = messagelist[:amt]
+    if (recent):
+        messagelist = messagelist[:amt]
+        remaining = dblength - amt
+    else:
+        messagelist = messagelist[start:start+amt]
+        remaining = dblength - (start + amt)
+
+    remaining = max(0, remaining)
+
     for message in messagelist:
         messagetext = message["text"]
         message["date"] = datetime.strftime(message["posted"], "%B %d, %Y")
@@ -61,8 +65,26 @@ def index():
                 messagetext[comment["comment_end"]:]
             )
         message["text"] = messagetext
+    return messagelist, remaining
+
+
+@app.route("/")
+def index():
+    amt = request.args.get("first", 15, type=int)
+    messagelist, remaining = getPostsFromDB(amt=amt, recent=True)
     print(f"{Fore.LIGHTGREEN_EX}Serving {len(messagelist)} posts.")
-    return render_template("index.html", MESSAGES=messagelist)
+    return render_template("index.html", MESSAGES=messagelist, LOADED=len(messagelist), REMAINING=remaining, SHOWBUTTON=(remaining > 0))
+
+
+@app.route("/api/v1/posts", methods=["GET"])
+def getPosts():
+    offset = request.args.get("start", 0, type=int)
+    amt = request.args.get("amount", 15, type=int)
+    jsonlist, remaining = getPostsFromDB(amt=amt, start=offset)
+    print(f"{Fore.GREEN}Serving the next {len(jsonlist)} JSON posts starting at index {offset}")
+    jsonlist.append({"remaining": remaining, "status": "All good :)"})
+    print(jsonlist)
+    return jsonify(jsonlist)
 
 
 @app.route("/write")

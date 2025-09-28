@@ -244,6 +244,17 @@ body {
     background-color: var(--line-color)
 }
 
+.load-more {
+    background-color: #fff8b3;
+    border: 2px solid #e6d96e;
+    color: inherit;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
 @media only screen and (max-width: 1010px) {
     .corner-icon {
         display: none;

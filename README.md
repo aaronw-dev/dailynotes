@@ -43,7 +43,7 @@ Daily Notes is a simple, beautiful web application designed for couples to leave
 
 ## The Sweet Details
 
-- **Encrypted media sharing** with AES-256-GCM security
+- **Files are encrypted at rest** with AES-256-GCM security
 - **Real-time inline comments** that persist with each note
 - **Infinite scroll pagination** with smooth loading
 - **Responsive design** that works on any device

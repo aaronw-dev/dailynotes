@@ -14,9 +14,13 @@
 <body>
     <img src="/static/logo/stickyheart-128.png" class="corner-icon">
     <div class="page" style="width:700px;">
+        <div class="dragdrop" style="display:none;">
+            Drop your file here to attach it!
+        </div>
         <div class="date">Month Day, Year</div><br>
         <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' onload="this.value=''"
             placeholder="Write anything..." rows="1"></textarea>
+        <div class="media-gallery"></div>
         <div class="button-row">
             <div class="color-select">
             </div>

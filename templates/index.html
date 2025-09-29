@@ -40,6 +40,7 @@
     <div class="page {{message['notecolor']}}" pageid="{{message['id']}}">
         <div class="date">{{message["date"]}}</div><br>
         <p>{{message["text"]|safe}}</p>
+        <div class="media-gallery">{{message["galleryhtml"]|safe}}</div>
     </div>
     {% endfor %}
     {% if SHOWBUTTON %}

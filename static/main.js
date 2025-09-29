@@ -207,7 +207,7 @@ function unwrapSpan(span) {
 
 function loadMorePosts() {
     const start = document.body.getAttribute("pagesloaded");
-
+    document.querySelector(".load-more").innerText = `Loading...`
     fetch(`/api/v1/posts?start=${encodeURIComponent(start)}`, {
         method: "GET"
     })
@@ -216,6 +216,7 @@ function loadMorePosts() {
             document.body.setAttribute("pagesloaded", (Number.parseInt(start) + posts.length - 1).toString())
             const body = document.querySelector("body");
             let listmeta = posts[posts.length - 1]
+            let newPosts = []
             posts.slice(0, -1).forEach(message => {
                 const pageDiv = document.createElement("div");
                 pageDiv.className = `page ${message.notecolor}`;
@@ -237,12 +238,14 @@ function loadMorePosts() {
                     addCommentHoverCallback(comment)
                 })
 
-
                 const lastChild = body.lastElementChild;
                 body.insertBefore(pageDiv, lastChild);
-
-
+                newPosts.push(pageDiv)
             });
+
+            if (newPosts.length > 0)
+                newPosts[0].scrollIntoView({ behavior: "smooth", block: "start" });
+
             if (listmeta.remaining > 0)
                 document.querySelector(".load-more").innerText = `Load more (${listmeta.remaining} left)`
             else

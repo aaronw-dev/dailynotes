@@ -2,7 +2,7 @@ import random
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from firebase_admin import credentials, firestore
 from flask import Flask, jsonify, redirect, request, render_template
 import firebase_admin
@@ -66,7 +66,9 @@ def getPostsFromDB(amt=15, start=0, recent=False):
 
     for message in messagelist:
         messagetext = message["text"]
-        message["date"] = datetime.strftime(message["posted"], "%B %d, %Y")
+        pst_time = message["posted"].astimezone(
+            timezone(timedelta(hours=-8)))
+        message["date"] = datetime.strftime(pst_time, "%B %d, %Y")
         # Sort comments by start index descending so later spans don't affect earlier indices
         comments = sorted(message.get("comments", []),
                           key=lambda c: c["comment_start"], reverse=True)

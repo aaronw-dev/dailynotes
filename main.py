@@ -90,7 +90,7 @@ def getPostsFromDB(amt=10, start=0, recent=False):
             filename = mediainfo["filename"]
             downloadlink = f"/encryptedmedia/{itemkey}"
             if (fileextension.lower() in ["png", "jpg", "gif", "webp", "jpeg"]):
-                mediahtml += f'''<div class="media-tile" onclick="openMediaViewer('{itemkey}')" link="{downloadlink}"><img src="{downloadlink}"></div>'''
+                mediahtml += f'''<div class="media-tile" onclick="openMediaViewer('{itemkey}')" link="{downloadlink}"><img loading="lazy" src="{downloadlink}"></div>'''
             else:
                 mediahtml += f'''<div class="media-tile" onclick="openMediaViewer('{itemkey}')" link="{downloadlink}"><span>{filename}</span></div>'''
         message["galleryhtml"] = mediahtml

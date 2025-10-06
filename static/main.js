@@ -233,10 +233,14 @@ function loadMorePosts() {
                 const p = document.createElement("p");
                 p.innerHTML = message.text; // message.text is assumed to be safe HTML
 
+                const gallery = document.createElement("div")
+                gallery.className = "media-gallery"
+                gallery.innerHTML = message.galleryhtml
+
                 pageDiv.appendChild(dateDiv);
                 pageDiv.appendChild(document.createElement("br"));
                 pageDiv.appendChild(p);
-
+                pageDiv.appendChild(gallery)
 
                 pageDiv.querySelectorAll(".comment-highlight").forEach(comment => {
                     addCommentHoverCallback(comment)

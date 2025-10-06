@@ -4,7 +4,7 @@ import json
 import os
 from datetime import datetime
 from firebase_admin import credentials, firestore
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, redirect, request, render_template
 import firebase_admin
 from colorama import init, Fore, Back
 import base64
@@ -23,12 +23,14 @@ app = Flask(__name__,
 if __name__ == "__main__":
     with open(".env.local", "r") as file:
         lines = file.readlines()
-        cert_json = lines[4][lines[4].index("=")+2:-2]
-        catboxhash = lines[3][lines[3].index("=")+2:-2]
+        cert_json = lines[5][lines[5].index("=")+2:-2]
+        catboxhash = lines[4][lines[4].index("=")+2:-2]
+        password = lines[3][lines[3].index("=")+2:-2]
         aeskey = lines[1][lines[1].index("=")+2:-2]
 else:
     cert_json = os.environ.get("firebase")
     catboxhash = os.environ.get("cb_hsh")
+    password = os.environ.get("auth_pw")
     aeskey = os.environ.get("AES_KEY")
 
 aeskey = base64.b64decode(aeskey)
@@ -120,14 +122,33 @@ def decrypt(encrypted_data: bytes) -> bytes:
 
 @app.route("/")
 def index():
+    if (password != request.cookies.get("auth_pw")):
+        return redirect("/login")
     amt = request.args.get("first", 15, type=int)
     messagelist, remaining = getPostsFromDB(amt=amt, recent=True)
     print(f"{Fore.LIGHTGREEN_EX}Serving {len(messagelist)} posts.")
     return render_template("index.html", MESSAGES=messagelist, LOADED=len(messagelist), REMAINING=remaining, SHOWBUTTON=(remaining > 0))
 
 
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+
+@app.route("/api/v1/login", methods=["POST"])
+def loginendpoint():
+    pw = request.form.get("password")
+    if pw == password:
+        resp = redirect("/")
+        resp.set_cookie("auth_pw", pw, max_age=604800)  # a week
+        return resp
+    return render_template("login.html", error="Incorrect password.")
+
+
 @app.route("/encryptedmedia/<key>")
 def getMedia(key):
+    if (password != request.cookies.get("auth_pw")):
+        return redirect("/login")
     mediainfo = db.collection("files").document(key).get().to_dict()
     mimetype = mediainfo.get("mimetype", "application/octet-stream")
     filelink = mediainfo["catbox_link"]
@@ -144,6 +165,8 @@ def getMedia(key):
 
 @app.route("/api/v1/posts", methods=["GET"])
 def getPosts():
+    if (password != request.cookies.get("auth_pw")):
+        return redirect("/login")
     offset = request.args.get("start", 0, type=int)
     amt = request.args.get("amount", 15, type=int)
     jsonlist, remaining = getPostsFromDB(amt=amt, start=offset)
@@ -154,6 +177,8 @@ def getPosts():
 
 @app.route("/api/v1/upload", methods=["POST"])
 def upload():
+    if (password != request.cookies.get("auth_pw")):
+        return redirect("/login")
     if 'media' not in request.files:
         return {"message": "You didn't attach a file to your request."}, 400
     else:
@@ -185,11 +210,15 @@ def upload():
 
 @app.route("/write")
 def write():
+    if (password != request.cookies.get("auth_pw")):
+        return redirect("/login")
     return render_template("writing.html")
 
 
 @app.route("/api/v1/write", methods=["POST"])
 def api_write():
+    if (password != request.cookies.get("auth_pw")):
+        return redirect("/login")
     params = request.json
     params["comments"] = []
     params["posted"] = datetime.fromisoformat(
@@ -200,6 +229,8 @@ def api_write():
 
 @app.route("/api/v1/comment", methods=["POST"])
 def comment():
+    if (password != request.cookies.get("auth_pw")):
+        return redirect("/login")
     params = request.json
     page_id = params.get("pageID")
     comment_data = {k: v for k, v in params.items() if k != "pageID"}

@@ -337,6 +337,33 @@ body {
     opacity: 1;
 }
 
+.page.login form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.page.login form * {
+    width: fit-content;
+}
+
+form h1 {
+    font-size: 2.4em;
+    margin: 0;
+    margin-bottom: 40px;
+}
+
+.page.login input,
+.page.login button {
+    background-color: #ffface;
+    border: 2px solid #bbb154;
+    padding: 5px 10px;
+    font-size: 22px;
+    font-family: inherit;
+    color: inherit;
+}
+
 @media only screen and (max-width: 1010px) {
     .corner-icon {
         display: none;

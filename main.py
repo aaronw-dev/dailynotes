@@ -48,7 +48,7 @@ def escapeCommentText(text: str):
     return text.replace("\"", "&quot;")
 
 
-def getPostsFromDB(amt=15, start=0, recent=False):
+def getPostsFromDB(amt=10, start=0, recent=False):
     messagelist = [
         {**document.get().to_dict(), "id": document.id}
         for document in db.collection("messages").list_documents(amt)
@@ -90,9 +90,9 @@ def getPostsFromDB(amt=15, start=0, recent=False):
             filename = mediainfo["filename"]
             downloadlink = f"/encryptedmedia/{itemkey}"
             if (fileextension.lower() in ["png", "jpg", "gif", "webp", "jpeg"]):
-                mediahtml += f'''<div class="media-tile" link="{downloadlink}"><img src="{downloadlink}"></div>'''
+                mediahtml += f'''<div class="media-tile" onclick="openMediaViewer('{itemkey}')" link="{downloadlink}"><img src="{downloadlink}"></div>'''
             else:
-                mediahtml += f'''<div class="media-tile" link="{downloadlink}"><span>{filename}</span></div>'''
+                mediahtml += f'''<div class="media-tile" onclick="openMediaViewer('{itemkey}')" link="{downloadlink}"><span>{filename}</span></div>'''
         message["galleryhtml"] = mediahtml
         message["text"] = messagetext
     return messagelist, remaining
@@ -126,7 +126,7 @@ def decrypt(encrypted_data: bytes) -> bytes:
 def index():
     if (password != request.cookies.get("auth_pw")):
         return redirect("/login")
-    amt = request.args.get("first", 15, type=int)
+    amt = request.args.get("first", 10, type=int)
     messagelist, remaining = getPostsFromDB(amt=amt, recent=True)
     print(f"{Fore.LIGHTGREEN_EX}Serving {len(messagelist)} posts.")
     return render_template("index.html", MESSAGES=messagelist, LOADED=len(messagelist), REMAINING=remaining, SHOWBUTTON=(remaining > 0))
@@ -163,6 +163,14 @@ def getMedia(key):
         return {"message": "File not found or connection error"}, 404
     decrypted = decrypt(response.content)
     return decrypted, 200, {'Content-Type': mimetype}
+
+
+@app.route("/api/v1/filedata/<key>")
+def getfiledata(key):
+    if (password != request.cookies.get("auth_pw")):
+        return redirect("/login")
+    mediainfo = db.collection("files").document(key).get().to_dict()
+    return mediainfo
 
 
 @app.route("/api/v1/posts", methods=["GET"])

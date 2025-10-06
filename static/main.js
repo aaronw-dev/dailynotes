@@ -4,6 +4,10 @@ function init() {
     commentprompt = document.querySelector(".commentprompt")
     commentInput = commentprompt.querySelector("input")
     copyBox = document.querySelector(".copied")
+    mediaviewer = document.querySelector(".media-viewer")
+    mediaimg = document.querySelector("#media-img")
+    mediavideo = document.querySelector("#media-vid")
+    mediadefault = document.querySelector("#media-img")
 
     window.addEventListener("mouseup", onTextSelected)
     window.addEventListener("touchend", onTextSelected)
@@ -255,8 +259,50 @@ function loadMorePosts() {
             console.error("Error loading more posts:", error);
         });
 }
-
+function openMediaViewer(fileid) {
+    fetch(`/api/v1/filedata/${fileid}`)
+        .then(response => response.json())
+        .then(result => {
+            const mimetype = result.mimetype;
+            mediaviewer.classList.remove("closed")
+            document.body.style.overflow = "hidden"
+            if (mimetype.startsWith("image/")) {
+                mediaimg.src = `/encryptedmedia/${fileid}`;
+                mediaimg.style.display = "";
+                if (mediavideo) mediavideo.style.display = "none";
+            } else if (mimetype.startsWith("video/")) {
+                if (!mediavideo) {
+                    mediavideo = document.createElement("video");
+                    mediavideo.id = "media-video";
+                    mediavideo.controls = true;
+                    mediaviewer.appendChild(mediavideo);
+                }
+                mediavideo.src = `/encryptedmedia/${fileid}`;
+                mediavideo.style.display = "";
+                mediaimg.style.display = "none";
+            } else {
+                mediaimg.style.display = "none";
+                if (mediavideo) mediavideo.style.display = "none";
+            }
+        })
+        .catch(error => {
+            console.error("Error loading media:", error);
+            mediaimg.style.display = "none";
+            if (mediavideo) mediavideo.style.display = "none";
+        });
+}
+function closeMediaViewer() {
+    mediaviewer.classList.add("closed")
+    document.body.style.overflow = "scroll"
+    mediaimg.style.display = "none"
+    mediavideo.style.display = "none"
+    mediadefault.style.display = "none"
+}
+function addMediaCallbacks() {
+    openMediaViewer(fileid)
+}
 var selcontext, commentprompt, commentbox, commentInput, currentSelection, currentTempSpan, selectedText, copyBox
+var mediaviewer, mediaimg, mediavideo, mediadefault
 var selectionStart = 0;
 var selectionEnd = 0;
 window.addEventListener("load", init)

@@ -36,6 +36,13 @@
     <div class="copied popover" style="display: none;">
         Copied.
     </div>
+    <div class="media-viewer closed">
+        <img src="" id="media-img">
+        <video src="" id="media-vid" controls></video>
+        <button class="close-mv" onclick="closeMediaViewer()">
+            <img src="/static/icons/close.svg">
+        </button>
+    </div>
     {% for message in MESSAGES %}
     <div class="page {{message['notecolor']}}" pageid="{{message['id']}}">
         <div class="date">{{message["date"]}}</div><br>

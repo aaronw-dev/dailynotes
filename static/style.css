@@ -302,6 +302,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .media-tile:has(span) {
@@ -362,6 +363,39 @@ form h1 {
     font-size: 22px;
     font-family: inherit;
     color: inherit;
+}
+
+.media-viewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    background-color: #111111;
+    opacity: 1;
+    transition: opacity 300ms;
+}
+
+.media-viewer.closed {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.close-mv {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.media-viewer>img,
+.media-viewer>video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 @media only screen and (max-width: 1010px) {

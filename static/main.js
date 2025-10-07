@@ -270,7 +270,6 @@ function loadMorePosts() {
         });
 }
 function openMediaViewer(e, fileid) {
-    console.log(e)
     if (e.target && e.target.classList.contains("download-button")) {
         return;
     }
@@ -279,7 +278,7 @@ function openMediaViewer(e, fileid) {
         .then(result => {
             const mimetype = result.mimetype;
             mediaviewer.classList.remove("closed")
-            document.body.style.overflow = "hidden"
+            document.body.style.overflowY = "hidden"
             if (mimetype.startsWith("image/")) {
                 mediaimg.src = `/encryptedmedia/${fileid}`;
                 mediaimg.style.display = "";
@@ -307,7 +306,7 @@ function openMediaViewer(e, fileid) {
 }
 function closeMediaViewer() {
     mediaviewer.classList.add("closed")
-    document.body.style.overflow = "scroll"
+    document.body.style.overflowY = "scroll"
     mediaimg.style.display = "none"
     mediavideo.style.display = "none"
     mediadefault.style.display = "none"

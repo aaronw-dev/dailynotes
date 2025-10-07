@@ -305,6 +305,29 @@ body {
     cursor: pointer;
 }
 
+.media-tile:hover>.download-button {
+    display: initial;
+}
+
+.download-button {
+    background: #1111118e;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: none;
+}
+
+.download-button img {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
 .media-tile:has(span) {
     background-color: #e4e4e4;
 }
@@ -397,6 +420,7 @@ form h1 {
     height: 100%;
     object-fit: contain;
 }
+
 
 @media only screen and (max-width: 1010px) {
     .corner-icon {

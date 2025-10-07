@@ -19,6 +19,7 @@ function init() {
             postComment();
         }
     });
+
     window.addEventListener("keyup", e => {
         if (e.shiftKey) {
             if (e.key === "ArrowRight" || e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -29,6 +30,11 @@ function init() {
             }
         }
     })
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !mediaviewer.classList.contains("closed")) {
+            closeMediaViewer();
+        }
+    });
     document.querySelectorAll(".comment-highlight").forEach(comment => {
         addCommentHoverCallback(comment)
     })
@@ -263,7 +269,11 @@ function loadMorePosts() {
             console.error("Error loading more posts:", error);
         });
 }
-function openMediaViewer(fileid) {
+function openMediaViewer(e, fileid) {
+    console.log(e)
+    if (e.target && e.target.classList.contains("download-button")) {
+        return;
+    }
     fetch(`/api/v1/filedata/${fileid}`)
         .then(response => response.json())
         .then(result => {
@@ -302,8 +312,8 @@ function closeMediaViewer() {
     mediavideo.style.display = "none"
     mediadefault.style.display = "none"
 }
-function addMediaCallbacks() {
-    openMediaViewer(fileid)
+function downloadFile(fileid) {
+    window.open(`/encryptedmedia/${fileid}?filename=true`, "_blank");
 }
 var selcontext, commentprompt, commentbox, commentInput, currentSelection, currentTempSpan, selectedText, copyBox
 var mediaviewer, mediaimg, mediavideo, mediadefault

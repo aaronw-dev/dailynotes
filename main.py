@@ -89,10 +89,11 @@ def getPostsFromDB(amt=10, start=0, recent=False):
             fileextension = mediainfo["file_ext"]
             filename = mediainfo["filename"]
             downloadlink = f"/encryptedmedia/{itemkey}"
+            downloadbutton = f"<button class=\"download-button\" onclick=\"downloadFile('{itemkey}')\"><img src=\"/static/icons/download.svg\"></button>"
             if (fileextension.lower() in ["png", "jpg", "gif", "webp", "jpeg"]):
-                mediahtml += f'''<div class="media-tile" onclick="openMediaViewer('{itemkey}')" link="{downloadlink}"><img loading="lazy" src="{downloadlink}"></div>'''
+                mediahtml += f'''<div class="media-tile" onclick="openMediaViewer(event, '{itemkey}')" link="{downloadlink}"><img loading="lazy" src="{downloadlink}">{downloadbutton}</div>'''
             else:
-                mediahtml += f'''<div class="media-tile" onclick="openMediaViewer('{itemkey}')" link="{downloadlink}"><span>{filename}</span></div>'''
+                mediahtml += f'''<div class="media-tile" onclick="openMediaViewer(event, '{itemkey}')" link="{downloadlink}"><span>{filename}</span>{downloadbutton}</div>'''
         message["galleryhtml"] = mediahtml
         message["text"] = messagetext
     return messagelist, remaining
@@ -151,6 +152,7 @@ def loginendpoint():
 def getMedia(key):
     if (password != request.cookies.get("auth_pw")):
         return redirect("/login")
+    includefilename = request.args.get("filename") == "true"
     mediainfo = db.collection("files").document(key).get().to_dict()
     mimetype = mediainfo.get("mimetype", "application/octet-stream")
     filelink = mediainfo["catbox_link"]
@@ -162,7 +164,10 @@ def getMedia(key):
         print(f"Error fetching file: {e}")
         return {"message": "File not found or connection error"}, 404
     decrypted = decrypt(response.content)
-    return decrypted, 200, {'Content-Type': mimetype}
+    headers = {'Content-Type': mimetype}
+    if includefilename:
+        headers['Content-Disposition'] = f'attachment; filename="{mediainfo["filename"]}"'
+    return decrypted, 200, headers
 
 
 @app.route("/api/v1/filedata/<key>")

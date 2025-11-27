@@ -50,3 +50,8 @@ Daily Notes is a simple, beautiful web application designed for couples to leave
 - **Clean, distraction-free** interface focused on your words
 - **Date organization** so you can look back on your messages
 - **Copy text feature** for sharing favorite quotes
+
+
+
+
+yes, I used AI to write this readme. fight me.

@@ -23,9 +23,9 @@ Daily Notes is a simple, beautiful web application designed for couples to leave
 
 ## Tech Stack
 
-- **Backend**: Python Flask with AES-256-GCM encryption
+- **Backend**: Flask with AES-256-GCM encryption
 - **Database**: Google Firebase Firestore
-- **Storage**: Catbox.moe (encrypted file hosting)
+- **Storage**: Catbox.moe
 - **Frontend**: Vanilla HTML/CSS/JavaScript
 - **Deployment**: Vercel
 
